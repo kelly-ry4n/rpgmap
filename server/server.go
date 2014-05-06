@@ -14,14 +14,19 @@ type User struct {
 	Pass string `form:"password" binding:"required"`
 }
 
+type NewUser struct {
+	Username        string
+	Password        string
+	PasswordConfirm string
+}
+
 func hello() string {
-	fmt.Print("SDF")
 	return "Hello World!"
 
 }
 
-func createUser(user User) string {
-	err := db.AddUser(user.User, user.Pass, db.Con)
+func createUser(user NewUser) string {
+	err := db.AddUser(user.Username, user.Password)
 	if err != nil {
 		return fmt.Sprintf("Error Adding User: %S", err)
 	}
@@ -36,7 +41,6 @@ func RunServer() {
 
 	con := db.GetDbConn()
 	defer con.Close()
-	// db.AddUser("t1", "q", con)
 
 	m := martini.Classic()
 	m.Use(auth.Basic("kelly", "kelly"))
@@ -48,6 +52,6 @@ func RunServer() {
 
 	m.Get("/", hello)
 	m.Get("/create_user", createUserView)
-	m.Post("/create_user", binding.Bind(User{}), createUser)
+	m.Post("/create_user", binding.Bind(NewUser{}), createUser)
 	m.Run()
 }

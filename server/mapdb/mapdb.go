@@ -27,8 +27,9 @@ func GetDbConn() *sql.DB {
 	return db
 }
 
-func AddUser(username, password string, con *sql.DB) error {
-	_, err := con.Exec("insert into users (user,password) values (?,?)", username, password)
+func AddUser(username, password string) error {
+	fmt.Printf("Adding %s %s", username, password)
+	_, err := Con.Exec("insert into users (user,password) values (?,?)", username, password)
 	if err != nil {
 		fmt.Printf("Error adding user from AddUser: %s", err)
 	}
